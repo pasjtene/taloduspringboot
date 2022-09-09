@@ -1,0 +1,8 @@
+package com.talodu.taloduspringboot.repository;
+
+import com.talodu.taloduspringboot.model.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RoleRepository extends JpaRepository <Role, Long> {
+    Role findByName(String name);
+}

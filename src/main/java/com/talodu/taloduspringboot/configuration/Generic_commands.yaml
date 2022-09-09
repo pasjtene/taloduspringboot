@@ -1,0 +1,1 @@
+//Server logs at: tail -n 200 /opt/tomcat/logs/catalina.out
