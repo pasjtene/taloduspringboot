@@ -28,13 +28,16 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-//@Slf4j
+@Slf4j
 @Service
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-      //  log.error("the request path is {}",request.getServletPath().equals("/api/authenticate"));
+        log.error("the request path is {}",request.getServletPath().equals("/api/authenticate"));
 
         if(request.getServletPath().equals("/api/authenticate")) {
             filterChain.doFilter(request, response);
@@ -50,10 +53,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String username = decodedJWT.getSubject();
 
-
-
-
-
                     String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {
@@ -68,7 +67,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
 
                 }catch (Exception  e) {
-                   // log.error("Error, exeption.. logging in: {} ", e.getMessage());
+                    log.error("Error, exeption.. logging in: {} ", e.getMessage());
                     response.setHeader("Error", e.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     //response.sendError(FORBIDDEN.value());

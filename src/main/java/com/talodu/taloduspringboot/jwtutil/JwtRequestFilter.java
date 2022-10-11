@@ -69,20 +69,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String serverName = request.getServerName();
 
-        rcookie.setMaxAge(duration_second);
+        rcookie.setMaxAge(600);
         rcookie.setSecure(false);
         rcookie.setHttpOnly(isHttpOnly);
         rcookie.setPath("/");
         rcookie.setDomain(serverName);
 
-        refresh_cookie.setMaxAge(300);
+        refresh_cookie.setMaxAge(3600);
         refresh_cookie.setSecure(false);
         refresh_cookie.setHttpOnly(isHttpOnly);
         refresh_cookie.setPath("/");
         refresh_cookie.setDomain(serverName);
 
 
-        user_auth.setMaxAge(300);
+        user_auth.setMaxAge(3600);
         user_auth.setSecure(false);
        // user_auth.setHttpOnly(isHttpOnly);
         user_auth.setPath("/");
@@ -106,52 +106,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
-/*
-        final String authorizationHeader = request.getHeader("Authorization");
-
-        Cookie cookie[]=request.getCookies();
-        Cookie cook;
-        String uname= null,pass="";
-
-        if (cookie == null) {
-            System.out.println("No cookies...");
-            System.out.println("No cookies...");
-        } else  {
-            System.out.println("No cookies...the type..");
-            System.out.println(cookie.getClass().getName());
-
-            for (int i = 0; i < cookie.length; i++) {
-                cook = cookie[i];
-                if(cook.getName().equalsIgnoreCase("user-id")) {
-                    uname=cook.getValue();
-                    System.out.println(cook.getValue());
-                } else  {
-                    System.out.println(cook.getValue());
-                }
-
-            }
-
-        }
-
-
-
-        System.out.println("The user jwt cookie");
-        System.out.println(uname);
-
-        System.out.println("The Authorization header");
-
-
-
-
-
-        if(uname != null) {
-            //We have a cookie
-            jwt = uname;
-            username = jwtUtil.extractUsername(jwt);
-        }
-        */
-
 
 
         //log.info("does user-id, access_token  cookie exist...{} ",getCookieValue(request,"user-id"));
@@ -187,23 +141,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 refreshCookies(request, response,refresh_token,access_token,90,true);
 
-
-                // response.sendRedirect("/api/token/refresh");
-                //username =null;
-
-                //final String jwt_token = jwtUtil.generateToken(myUserDetails,5);
-                /*
-                final String refresh_token = jwtUtil.generateToken(myUserDetails,5);
-                final String access_token = jwtUtil.generateToken(myUserDetails,2);
-
-                refreshCookies(request, response,"user-id", access_token, 90,true);
-                refreshCookies(request, response,"access_t", access_token, 90,true);
-                refreshCookies(request, response,"refresh_t", refresh_token, 300,true);
-
-                refreshCookies(request, response,"isUserAuth", "true", 300,false);
-
-                */
-
             }
 
         }
@@ -215,9 +152,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 //MyUserDetails myUserDetails = (MyUserDetails) this.myUserDetailService.loadUserByUsername(username);
                 MyUserDetails myUserDetails = (MyUserDetails) this.myUserDetailService.loadUserByUsername(username);
-                //log.info("The userdetail..2..{}",myUserDetails);
-                //UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-               // log.error("This is a test for log");
+
                 if(jwtUtil.validateToken(jwt, myUserDetails)) {
                    // log.error("The jwt token is validated....");
                     UsernamePasswordAuthenticationToken

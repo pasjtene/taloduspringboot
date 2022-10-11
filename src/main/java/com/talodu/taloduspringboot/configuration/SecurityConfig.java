@@ -46,9 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
               // "/api/users",
                 "/api/register",
                 "/api/authenticate",
-                "/talodu/api/users",
-                "/talodu/api/register",
-               "/api/token/refresh"
+                "/api/server/**"
+                //"/talodu/api/users",
+                //"/talodu/api/register",
+               //"/api/token/refresh"
                // "/talodu/api/uploadfile",
                 //"/api/uploadfile"
         );
@@ -90,6 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().configurationSource(request -> corsConfiguration)
                 .and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/authenticate").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/talodu/api/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/token/refresh").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("ROLE_SUPER_ADMIN")
@@ -122,7 +124,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://51.68.196.188"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "http://51.68.196.188",
+                "http://localhost:4200"
+                ));
         configuration.setAllowedMethods(Arrays.asList("GET","POST"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

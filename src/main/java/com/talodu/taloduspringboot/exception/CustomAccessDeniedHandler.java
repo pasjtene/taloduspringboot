@@ -17,7 +17,10 @@ import java.util.Map;
 //@Slf4j
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request,
+                       HttpServletResponse response,
+                       AccessDeniedException accessDeniedException)
+            throws IOException, ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
 
@@ -29,9 +32,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
 
         response.setHeader("No permission  for url", request.getRequestURI());
-        //response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        //sending 401 status code
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-       // response.setStatus(HttpServletResponse.);
 
         Map<String, String> error = new HashMap<>();
         error.put("Access was denied to url", request.getRequestURI());

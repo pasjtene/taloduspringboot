@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,38 +97,6 @@ public class UserService implements UserInterface{
     }
 
 
-    /*
-    public ResponseEntity<?> logUserOut(String email, String serverName) {
-        //ResponseCookie responseCookie = ResponseCookie.from("user-id",jwt )
-        ResponseCookie responseCookie = ResponseCookie.from("user-id","" )
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(00)
-                //.domain("localhost")
-                .domain(serverName)
-                .sameSite("Lax")
-                .build();
-
-
-        ResponseCookie auth_cookie = ResponseCookie.from("isUserAuth","false")
-                .secure(false)
-                .path("/")
-                .maxAge(300)
-                //.domain("localhost")
-                .domain(serverName)
-                .sameSite("Lax")
-                .build();
-
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, auth_cookie.toString())
-                .build();
-
-    }
-*/
-
     public User getUserByID(Long userId) {
 
         //Optional<User> userExist = this.userRepository.findUserByEmail(user.getEmail());
@@ -140,11 +110,28 @@ public class UserService implements UserInterface{
         return theuser;
     }
 
+    public Role getRoleByID(Long roleId) {
+
+        //Optional<User> userExist = this.userRepository.findUserByEmail(user.getEmail());
+
+        final String str = "role with id Does not exist: " + roleId.toString();
+
+        Role therole = this.roleRepository.findById(roleId).orElseThrow(
+                () -> new IllegalStateException(str)
+        );
+
+        return therole;
+    }
+
+    public int getAgeYears (LocalDate dob) {
+        return  Period.between(dob, LocalDate.now()).getYears();
+    }
+
 
     @Override
     public User saveUser(User user) {
         //log.info("Saving user {} to the database.. ",user);
-       // if(this.getUserExistByEmailAddress(user.getEmail())) return null;
+        if(this.getUserExistByEmailAddress(user.getEmail())) return null;
         return userRepository.save(user);
     }
 
@@ -161,6 +148,17 @@ public class UserService implements UserInterface{
         User user = this.getUserByEmailAddress(username);
         Role role = roleRepository.findByName(roleName);
         user.getRoles().add(role);
+
+    }
+
+
+    public void removeRoleFromUser(String username, String roleName) {
+        //User user = userRepository.findByUsername(username);
+        //log.info("Adding role {} to user..{} ",roleName,username);
+
+        User user = this.getUserByEmailAddress(username);
+        Role role = roleRepository.findByName(roleName);
+        user.getRoles().remove(role);
 
     }
 
